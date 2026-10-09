@@ -1,0 +1,77 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PawaPlay demo · fake money only</title><meta name="theme-color" content="#0b3d2e">
+<style>
+:root{--g:#0b3d2e;--g2:#12614a;--y:#f5c400;--bg:#f2f4f3;--t:#13201b;--m:#6b7a74}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--t);padding-bottom:84px}
+.demo{background:#c0392b;color:#fff;font-size:12px;text-align:center;padding:4px}
+header{background:var(--g);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.logo{font-weight:800;font-size:20px}.logo b{color:var(--y)}.bal{background:var(--g2);padding:6px 10px;border-radius:20px;font-size:14px}
+nav.tabs{display:flex;gap:6px;overflow:auto;padding:10px 12px;background:#fff}nav.tabs button{border:0;background:#e8ecea;padding:8px 12px;border-radius:18px;font-weight:600;white-space:nowrap}
+nav.tabs button.on{background:var(--g);color:#fff}
+.page{display:none;padding:12px}.page.on{display:block}
+.lg{font-size:12px;color:var(--m);margin:14px 2px 6px;font-weight:700;text-transform:uppercase}
+.m{background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:8px;box-shadow:0 1px 2px #0001}
+.mt{display:flex;justify-content:space-between;font-size:12px;color:var(--m)}.tm{font-weight:700;margin:6px 0}
+.odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.odds button{border:1px solid #d6dcd9;background:#fafbfa;border-radius:8px;padding:8px 4px;font-size:13px}
+.odds button span{display:block;font-weight:800;font-size:15px}.odds button.sel{background:var(--y);border-color:var(--y)}
+.live{color:#c0392b;font-weight:700}
+.slipbar{position:fixed;left:0;right:0;bottom:56px;background:var(--y);padding:10px 14px;display:none;justify-content:space-between;font-weight:700;cursor:pointer}
+.bot{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid #ddd;padding-bottom:env(safe-area-inset-bottom)}
+.bot button{flex:1;border:0;background:none;padding:8px 0;font-size:11px;color:var(--m)}.bot button.on{color:var(--g);font-weight:700}.bot i{display:block;font-style:normal;font-size:20px}
+.sheet{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:20}.sheet.on{display:flex}
+.sh{background:#fff;width:100%;border-radius:16px 16px 0 0;padding:16px;max-height:85vh;overflow:auto}
+.row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;font-size:14px}
+input,select{width:100%;padding:12px;border:1px solid #ccd;border-radius:10px;font-size:16px;margin:6px 0}
+.btn{width:100%;border:0;background:var(--g);color:#fff;padding:14px;border-radius:12px;font-weight:700;font-size:16px;margin-top:8px}
+.btn.y{background:var(--y);color:#111}.x{float:right;border:0;background:none;font-size:22px}
+.promo{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;border-radius:14px;padding:16px;margin-bottom:10px}.promo b{color:var(--y)}
+.bet{background:#fff;border-radius:12px;padding:12px;margin-bottom:8px}.st{font-size:12px;font-weight:700;padding:3px 8px;border-radius:10px}
+.won{background:#d4f5e2;color:#126b3a}.lost{background:#fde0dc;color:#a52a1d}.open{background:#fff3c4;color:#7a5d00}
+.rg{font-size:12px;color:var(--m);text-align:center;padding:14px}
+.pills{display:flex;gap:8px}.pills button{flex:1;padding:12px;border-radius:10px;border:2px solid #ddd;background:#fff;font-weight:700}.pills button.on{border-color:var(--g)}
+</style></head><body>
+<div class="demo">DEMO · fake money only · no real betting · 18+</div>
+<header><div class="logo">Pawa<b>Play</b></div><div class="bal" onclick="openDep()">RWF <span id="bal">0</span> ＋</div></header>
+<nav class="tabs" id="tabs"></nav>
+<section class="page on" id="p-sports"><div class="promo">🎁 Welcome bonus: <b>100% up to 20,000 RWF</b> on your first deposit (demo)</div><div id="list"></div></section>
+<section class="page" id="p-bets"><div id="bets"></div></section>
+<section class="page" id="p-acct"><div class="m"><div class="row"><span>Phone</span><b>0788 000 000 (demo)</b></div><div class="row"><span>Balance</span><b>RWF <span id="bal2">0</span></b></div>
+<button class="btn y" onclick="openDep()">Deposit with MoMo</button><button class="btn" onclick="withdraw()">Withdraw</button></div>
+<div class="m"><b>Responsible gaming</b><div class="row"><span>Daily deposit limit</span><select style="width:auto" id="lim" onchange="save()"><option>None</option><option>5,000</option><option>20,000</option><option>50,000</option></select></div>
+<div class="row"><span>Take a break</span><button onclick="alert('Self-exclusion would lock your account (demo).')">7 days</button></div></div><div class="rg">Bet responsibly. 18+ only. This is a product demo with no real money.</div></section>
+<div class="slipbar" id="slipbar" onclick="openSlip()"><span>Bet slip (<span id="n">0</span>)</span><span>Odds <span id="to">1.00</span> ›</span></div>
+<div class="bot"><button class="on" data-p="sports"><i>⚽</i>Sports</button><button data-p="bets"><i>🧾</i>My Bets</button><button data-p="acct"><i>👤</i>Account</button></div>
+<div class="sheet" id="slip"><div class="sh"><button class="x" onclick="cl('slip')">×</button><h3>Bet slip</h3><div id="sl"></div>
+<input id="stake" type="number" inputmode="numeric" placeholder="Stake (RWF)" oninput="calc()"><div class="row"><span>Total odds</span><b id="to2">1.00</b></div><div class="row"><span>Potential win</span><b>RWF <span id="pw">0</span></b></div>
+<button class="btn y" onclick="place()">Place bet</button></div></div>
+<div class="sheet" id="dep"><div class="sh"><button class="x" onclick="cl('dep')">×</button><h3>Deposit (demo)</h3><div class="pills"><button class="on" onclick="net(this)">MTN MoMo</button><button onclick="net(this)">Airtel Money</button></div>
+<input placeholder="Phone number" value="0788 000 000"><input id="amt" type="number" placeholder="Amount (RWF)" value="5000"><div id="depmsg"></div><button class="btn" onclick="dep()">Deposit</button></div></div>
+<script>
+const L=[["Premier League","🏴"],["Rwanda Premier League","🇷🇼"],["La Liga","🇪🇸"],["Champions League","⭐"]];
+const T={0:["Arsenal","Chelsea","Liverpool","Man City","Man United","Tottenham"],1:["APR FC","Rayon Sports","Police FC","AS Kigali","Mukura VS","Kiyovu Sports"],2:["Real Madrid","Barcelona","Atlético","Sevilla"],3:["Bayern","PSG","Inter","Dortmund"]};
+let M=[],id=0;L.forEach((l,i)=>{const t=T[i];for(let k=0;k<t.length-1;k+=2){const h=+(1.5+Math.random()*2).toFixed(2),a=+(1.6+Math.random()*3).toFixed(2),d=+(2.9+Math.random()*1).toFixed(2);M.push({id:id++,lg:i,h:t[k],a:t[k+1],o:[h,d,a],live:Math.random()<.25,tm:["Today 18:00","Today 21:00","Sat 16:00","Sun 19:30"][k%4]})}});
+let S=JSON.parse(localStorage.pp||'{"bal":0,"bets":[]}'),slip={};
+const $=x=>document.getElementById(x),f=n=>Math.round(n).toLocaleString();
+function save(){localStorage.pp=JSON.stringify(S);$('bal').textContent=$('bal2').textContent=f(S.bal)}
+function tabs(){$('tabs').innerHTML=['All','⚽ Live',...L.map(l=>l[1]+' '+l[0])].map((x,i)=>`<button class="${i?'':'on'}" onclick="flt(${i},this)">${x}</button>`).join('')}
+let cur=0;function flt(i,b){cur=i;document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');draw()}
+function draw(){let ms=M.filter(m=>cur==0||(cur==1?m.live:m.lg==cur-2)),h='',lg=-1;ms.forEach(m=>{if(m.lg!=lg){lg=m.lg;h+=`<div class="lg">${L[lg][1]} ${L[lg][0]}</div>`}
+h+=`<div class="m"><div class="mt"><span>${m.live?'<span class="live">● LIVE '+(30+m.id*7%60)+"'</span>":m.tm}</span><span>1X2</span></div><div class="tm">${m.h} vs ${m.a}</div><div class="odds">${['1','X','2'].map((k,j)=>`<button class="${slip[m.id]&&slip[m.id].j==j?'sel':''}" onclick="pick(${m.id},${j})">${k}<span>${m.o[j].toFixed(2)}</span></button>`).join('')}</div></div>`});$('list').innerHTML=h||'<p>No matches</p>';bar()}
+function pick(i,j){if(slip[i]&&slip[i].j==j)delete slip[i];else slip[i]={j};draw()}
+function tot(){return Object.keys(slip).reduce((p,i)=>p*M[i].o[slip[i].j],1)}
+function bar(){const n=Object.keys(slip).length;$('slipbar').style.display=n?'flex':'none';$('n').textContent=n;$('to').textContent=tot().toFixed(2)}
+function openSlip(){$('sl').innerHTML=Object.keys(slip).map(i=>{const m=M[i],j=slip[i].j;return `<div class="row"><span>${m.h} vs ${m.a}<br><small>Pick: ${['Home','Draw','Away'][j]}</small></span><b>${m.o[j].toFixed(2)}</b></div>`}).join('');calc();$('slip').classList.add('on')}
+function calc(){const s=+$('stake').value||0;$('to2').textContent=tot().toFixed(2);$('pw').textContent=f(s*tot())}
+function place(){const s=+$('stake').value||0;if(s<100)return alert('Minimum stake is 100 RWF');if(s>S.bal){cl('slip');return openDep('Not enough balance. Deposit first.')}
+S.bal-=s;const legs=Object.keys(slip).map(i=>({g:M[i].h+' vs '+M[i].a,p:['Home','Draw','Away'][slip[i].j],o:M[i].o[slip[i].j]}));const b={id:Date.now(),s,o:tot(),legs,st:'open'};S.bets.unshift(b);save();slip={};$('stake').value='';cl('slip');draw();
+setTimeout(()=>{b.st=Math.random()<.4?'won':'lost';if(b.st=='won')S.bal+=b.s*b.o;save();rb()},8000);go('bets')}
+function rb(){$('bets').innerHTML=S.bets.length?S.bets.map(b=>`<div class="bet"><div class="row" style="border:0"><b>${b.legs.length>1?'Multi ('+b.legs.length+')':'Single'}</b><span class="st ${b.st}">${b.st.toUpperCase()}</span></div>${b.legs.map(l=>`<div style="font-size:13px;color:#555">${l.g} · ${l.p} @ ${l.o.toFixed(2)}</div>`).join('')}<div class="row" style="border:0"><span>Stake RWF ${f(b.s)}</span><b>Win RWF ${f(b.s*b.o)}</b></div></div>`).join(''):'<p style="text-align:center;color:#888;padding:40px">No bets yet. Pick some odds!</p>'}
+function openDep(msg){$('depmsg').textContent=typeof msg=='string'?msg:'';$('dep').classList.add('on')}
+function net(b){b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+function dep(){const a=+$('amt').value||0;if(a<100)return;$('depmsg').innerHTML='📱 Approve the payment on your phone… (demo)';setTimeout(()=>{S.bal+=a;save();$('depmsg').innerHTML='✅ Deposited RWF '+f(a)+' (fake money)';setTimeout(()=>cl('dep'),1200)},2000)}
+function withdraw(){if(!S.bal)return alert('Nothing to withdraw');alert('RWF '+f(S.bal)+' sent to your MoMo (demo)');S.bal=0;save()}
+function cl(x){$(x).classList.remove('on')}
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('on',x.id=='p-'+p));document.querySelectorAll('.bot button').forEach(x=>x.classList.toggle('on',x.dataset.p==p));if(p=='bets')rb()}
+document.querySelectorAll('.bot button').forEach(b=>b.onclick=()=>go(b.dataset.p));
+tabs();draw();save();
+</script></body></html>

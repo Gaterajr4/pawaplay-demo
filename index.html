@@ -29,18 +29,45 @@ input,select{width:100%;padding:12px;border:1px solid #ccd;border-radius:10px;fo
 .won{background:#d4f5e2;color:#126b3a}.lost{background:#fde0dc;color:#a52a1d}.open{background:#fff3c4;color:#7a5d00}
 .rg{font-size:12px;color:var(--m);text-align:center;padding:14px}
 .pills{display:flex;gap:8px}.pills button{flex:1;padding:12px;border-radius:10px;border:2px solid #ddd;background:#fff;font-weight:700}.pills button.on{border-color:var(--g)}
+.cz{background:linear-gradient(160deg,#1a0b2e,#3a1361);color:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 4px 14px #0003}
+.cz h3{margin:0 0 8px}.cz small{color:#cbb8ee}.gsel{display:flex;gap:6px;margin-bottom:10px}.gsel button{flex:1;border:0;padding:10px 4px;border-radius:12px;font-weight:700;background:#fff;color:var(--g)}.gsel button.on{background:var(--y);color:#111}
+.game{display:none}.game.on{display:block}
+.reels{display:flex;gap:8px;justify-content:center;background:#0d0619;padding:12px;border-radius:14px;border:3px solid var(--y);box-shadow:inset 0 0 20px #000,0 0 18px #f5c40055}
+.reel{width:76px;height:84px;overflow:hidden;background:linear-gradient(#fff,#eee 40%,#ddd);border-radius:10px;position:relative}
+.strip{position:absolute;left:0;right:0;top:0}.strip div{height:84px;display:flex;align-items:center;justify-content:center;font-size:46px}
+.reels.win{animation:glow .5s 4 alternate}@keyframes glow{to{box-shadow:0 0 40px var(--y),inset 0 0 20px #000}}
+.stk{display:flex;gap:6px;align-items:center;margin:10px 0}.stk button{border:0;background:#ffffff22;color:#fff;border-radius:10px;padding:10px 12px;font-weight:700}.stk input{margin:0;text-align:center;background:#fff}
+.res{min-height:24px;text-align:center;font-weight:800;margin:8px 0;font-size:17px}.res.w{color:var(--y);animation:pop .4s}@keyframes pop{50%{transform:scale(1.25)}}
+.wheelw{position:relative;width:min(280px,80vw);margin:6px auto}.wheelw canvas{width:100%;display:block;border-radius:50%;box-shadow:0 0 0 6px #6b4a12,0 0 0 9px var(--y),0 6px 20px #0008}
+.ptr{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid var(--y);z-index:2;filter:drop-shadow(0 2px 2px #000)}
+.rbets{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.rbets button{border:2px solid transparent;border-radius:10px;padding:10px;font-weight:800;color:#fff}.rbets button.on{border-color:var(--y);transform:scale(1.04)}
+.hist{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}.hist span{min-width:26px;padding:3px 5px;border-radius:6px;text-align:center;font-size:12px;font-weight:700}
+.crash{position:relative;background:#0d0619;border-radius:14px;overflow:hidden;height:220px}.crash canvas{width:100%;height:100%;display:block}
+.mult{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;text-shadow:0 2px 10px #000;pointer-events:none}.mult.boom{color:#ff4d4d}
 </style></head><body>
 <div class="demo">DEMO · fake money only · no real betting · 18+</div>
 <header><div class="logo">Pawa<b>Play</b></div><div class="bal" onclick="openDep()">RWF <span id="bal">0</span> ＋</div></header>
 <nav class="tabs" id="tabs"></nav>
 <section class="page on" id="p-sports"><div class="promo">🎁 Welcome bonus: <b>100% up to 20,000 RWF</b> on your first deposit (demo)</div><div id="list"></div></section>
+<section class="page" id="p-casino">
+<div class="cz"><h3>🎰 Casino <small>· demo games, fake money only · 18+</small></h3><div class="gsel"><button class="on" onclick="gsel('slots',this)">🍒 Slots</button><button onclick="gsel('roul',this)">🎡 Roulette</button><button onclick="gsel('crash',this)">✈️ Crash</button></div>
+<div class="game on" id="g-slots"><div class="reels" id="reels"><div class="reel"><div class="strip"></div></div><div class="reel"><div class="strip"></div></div><div class="reel"><div class="strip"></div></div></div>
+<div class="res" id="sres">3 of a kind pays big. Pairs pay 2x.</div><div class="stk"><button onclick="adj('ss',-100)">−</button><input id="ss" type="number" value="500" inputmode="numeric"><button onclick="adj('ss',100)">＋</button></div><button class="btn y" id="spinb" onclick="spinSlots()">SPIN</button>
+<div style="font-size:12px;color:#cbb8ee;margin-top:8px">Pays: 💎💎💎 50x · 7️⃣7️⃣7️⃣ 25x · 🔔🔔🔔 10x · 🍉/🍋/🍒 x3 5x · any pair 2x</div></div>
+<div class="game" id="g-roul"><div class="wheelw"><div class="ptr"></div><canvas id="wheel" width="560" height="560"></canvas></div><div class="res" id="rres">Pick a bet, then spin</div>
+<div class="rbets"><button style="background:#c0392b" onclick="rb2('red',this)">RED 2x</button><button style="background:#111" onclick="rb2('black',this)">BLACK 2x</button><button style="background:#1e8449" onclick="rb2('num',this)">NUMBER 36x</button></div>
+<input id="rnum" type="number" min="0" max="36" placeholder="Your number (0–36)" style="display:none">
+<div class="stk"><button onclick="adj('rs',-100)">−</button><input id="rs" type="number" value="500" inputmode="numeric"><button onclick="adj('rs',100)">＋</button></div><button class="btn y" id="rspin" onclick="spinRoul()">SPIN WHEEL</button><div class="hist" id="rhist"></div></div>
+<div class="game" id="g-crash"><div class="crash"><canvas id="cc" width="600" height="300"></canvas><div class="mult" id="mult">1.00x</div></div><div class="res" id="cres">Bet, watch it fly, cash out before it crashes!</div>
+<div class="stk"><button onclick="adj('cs',-100)">−</button><input id="cs" type="number" value="500" inputmode="numeric"><button onclick="adj('cs',100)">＋</button></div><button class="btn y" id="cbtn" onclick="crashBtn()">BET</button><div class="hist" id="chist"></div></div>
+</div><div class="rg">Casino results are random and for demo only. No real money. 18+. Play responsibly.</div></section>
 <section class="page" id="p-bets"><div id="bets"></div></section>
 <section class="page" id="p-acct"><div class="m"><div class="row"><span>Phone</span><b>0788 000 000 (demo)</b></div><div class="row"><span>Balance</span><b>RWF <span id="bal2">0</span></b></div>
 <button class="btn y" onclick="openDep()">Deposit with MoMo</button><button class="btn" onclick="withdraw()">Withdraw</button></div>
 <div class="m"><b>Responsible gaming</b><div class="row"><span>Daily deposit limit</span><select style="width:auto" id="lim" onchange="save()"><option>None</option><option>5,000</option><option>20,000</option><option>50,000</option></select></div>
 <div class="row"><span>Take a break</span><button onclick="alert('Self-exclusion would lock your account (demo).')">7 days</button></div></div><div class="rg">Bet responsibly. 18+ only. This is a product demo with no real money.</div></section>
 <div class="slipbar" id="slipbar" onclick="openSlip()"><span>Bet slip (<span id="n">0</span>)</span><span>Odds <span id="to">1.00</span> ›</span></div>
-<div class="bot"><button class="on" data-p="sports"><i>⚽</i>Sports</button><button data-p="bets"><i>🧾</i>My Bets</button><button data-p="acct"><i>👤</i>Account</button></div>
+<div class="bot"><button class="on" data-p="sports"><i>⚽</i>Sports</button><button data-p="casino"><i>🎰</i>Casino</button><button data-p="bets"><i>🧾</i>My Bets</button><button data-p="acct"><i>👤</i>Account</button></div>
 <div class="sheet" id="slip"><div class="sh"><button class="x" onclick="cl('slip')">×</button><h3>Bet slip</h3><div id="sl"></div>
 <input id="stake" type="number" inputmode="numeric" placeholder="Stake (RWF)" oninput="calc()"><div class="row"><span>Total odds</span><b id="to2">1.00</b></div><div class="row"><span>Potential win</span><b>RWF <span id="pw">0</span></b></div>
 <button class="btn y" onclick="place()">Place bet</button></div></div>
@@ -71,7 +98,39 @@ function net(b){b.parentNode.querySelectorAll('button').forEach(x=>x.classList.r
 function dep(){const a=+$('amt').value||0;if(a<100)return;$('depmsg').innerHTML='📱 Approve the payment on your phone… (demo)';setTimeout(()=>{S.bal+=a;save();$('depmsg').innerHTML='✅ Deposited RWF '+f(a)+' (fake money)';setTimeout(()=>cl('dep'),1200)},2000)}
 function withdraw(){if(!S.bal)return alert('Nothing to withdraw');alert('RWF '+f(S.bal)+' sent to your MoMo (demo)');S.bal=0;save()}
 function cl(x){$(x).classList.remove('on')}
-function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('on',x.id=='p-'+p));document.querySelectorAll('.bot button').forEach(x=>x.classList.toggle('on',x.dataset.p==p));if(p=='bets')rb()}
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('on',x.id=='p-'+p));document.querySelectorAll('.bot button').forEach(x=>x.classList.toggle('on',x.dataset.p==p));if(p=='bets')rb();$('tabs').style.display=p=='sports'?'flex':'none';$('slipbar').style.display=p=='sports'&&Object.keys(slip).length?'flex':'none';if(p=='casino')scrollTo(0,0)}
 document.querySelectorAll('.bot button').forEach(b=>b.onclick=()=>go(b.dataset.p));
-tabs();draw();save();
+function gsel(g,b){b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.game').forEach(x=>x.classList.toggle('on',x.id=='g-'+g));if(g=='roul')drawWheel()}
+function adj(i,d){$(i).value=Math.max(100,(+$(i).value||0)+d)}
+function stake(i){const s=+$(i).value||0;if(s<100){alert('Minimum stake is 100 RWF');return 0}if(s>S.bal){openDep('Not enough balance. Deposit first.');return 0}S.bal-=s;save();return s}
+const SY=['🍒','🍋','🍉','🔔','7️⃣','💎'],SW=[30,25,20,12,8,5],RH=84;
+function rsym(){let r=Math.random()*100,a=0;for(let i=0;i<SY.length;i++){a+=SW[i];if(r<a)return SY[i]}return SY[0]}
+let spinning=0;function initReels(){document.querySelectorAll('.strip').forEach(s=>{s.innerHTML='<div>'+rsym()+'</div>';s.style.transition='none';s.style.transform='translateY(0)'})}
+function spinSlots(){if(spinning)return;const s=stake('ss');if(!s)return;spinning=1;$('spinb').disabled=1;$('reels').classList.remove('win');$('sres').className='res';$('sres').textContent='Spinning…';
+const out=[rsym(),rsym(),rsym()];document.querySelectorAll('.strip').forEach((st,i)=>{const cur=st.lastElementChild.textContent,n=20+i*8;let h='<div>'+cur+'</div>';for(let k=0;k<n;k++)h+='<div>'+SY[Math.random()*6|0]+'</div>';h+='<div>'+out[i]+'</div>';st.innerHTML=h;st.style.transition='none';st.style.transform='translateY(0)';st.offsetHeight;st.style.transition=`transform ${1.2+i*.5}s cubic-bezier(.15,.85,.25,1.05)`;st.style.transform=`translateY(-${(n+1)*RH}px)`});
+setTimeout(()=>{let m=0;const[a,b,c]=out;if(a==b&&b==c)m={'💎':50,'7️⃣':25,'🔔':10}[a]||5;else if(a==b||b==c||a==c)m=2;
+if(m){S.bal+=s*m;save();$('sres').className='res w';$('sres').textContent=`🎉 ${m}x · You win RWF ${f(s*m)}`;$('reels').classList.add('win')}else $('sres').textContent='No win. Try again!';spinning=0;$('spinb').disabled=0},2350)}
+const RO=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26],RED=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+const rc=n=>n==0?'#1e8449':RED.includes(n)?'#c0392b':'#111';let rot=0,rbet=null,rspin=0;
+function drawWheel(){const c=$('wheel'),x=c.getContext('2d'),R=280,sg=2*Math.PI/37;x.clearRect(0,0,560,560);RO.forEach((n,i)=>{const a0=-Math.PI/2+i*sg-sg/2;x.beginPath();x.moveTo(R,R);x.arc(R,R,R,a0,a0+sg);x.fillStyle=rc(n);x.fill();x.strokeStyle='#d4af37';x.lineWidth=2;x.stroke();
+x.save();x.translate(R,R);x.rotate(a0+sg/2+Math.PI/2);x.fillStyle='#fff';x.font='bold 22px sans-serif';x.textAlign='center';x.fillText(n,0,-R+32);x.restore()});
+x.beginPath();x.arc(R,R,R*.55,0,7);x.fillStyle='#3a1361';x.fill();x.strokeStyle='#d4af37';x.lineWidth=6;x.stroke();x.beginPath();x.arc(R,R,40,0,7);x.fillStyle='#d4af37';x.fill();x.fillStyle='#fff';x.font='bold 40px sans-serif';x.textAlign='center';x.fillText('PAWA',R,R-60);}
+function rb2(t,b){rbet=t;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');$('rnum').style.display=t=='num'?'block':'none'}
+function spinRoul(){if(rspin)return;if(!rbet)return $('rres').textContent='Pick RED, BLACK or NUMBER first';let pn=+$('rnum').value;if(rbet=='num'&&($('rnum').value===''||pn<0||pn>36||pn%1))return $('rres').textContent='Enter a number 0–36';
+const s=stake('rs');if(!s)return;rspin=1;$('rspin').disabled=1;$('rres').className='res';$('rres').textContent='No more bets…';const i=Math.random()*37|0,n=RO[i],sd=360/37;
+const target=(360-i*sd+(Math.random()-.5)*sd*.6)%360;rot+=360*6+((target-rot%360)+360)%360;const w=$('wheel');w.style.transition='transform 4.5s cubic-bezier(.12,.7,.15,1)';w.style.transform=`rotate(${rot}deg)`;
+setTimeout(()=>{let m=0;if(rbet=='red'&&RED.includes(n))m=2;if(rbet=='black'&&n&&!RED.includes(n))m=2;if(rbet=='num'&&n==pn)m=36;const cn=n==0?'green':RED.includes(n)?'red':'black';
+if(m){S.bal+=s*m;save();$('rres').className='res w';$('rres').textContent=`🎉 ${n} ${cn} · You win RWF ${f(s*m)}`}else $('rres').textContent=`${n} ${cn} · No win`;
+$('rhist').insertAdjacentHTML('afterbegin',`<span style="background:${rc(n)}">${n}</span>`);rspin=0;$('rspin').disabled=0},4600)}
+let cs={st:'idle'},craf;function crashPt(){const u=Math.random();return Math.max(1,Math.floor(97/(1-u))/100)}
+function crashBtn(){if(cs.st=='fly'){if(cs.out)return;cs.out=1;const w=cs.s*cs.m;S.bal+=w;save();$('cres').className='res w';$('cres').textContent=`💰 Cashed out at ${cs.m.toFixed(2)}x · RWF ${f(w)}`;$('cbtn').textContent='CASHED OUT ✓';$('cbtn').disabled=1;return}
+const s=stake('cs');if(!s)return;cs={st:'fly',s,cp:crashPt(),t0:performance.now(),m:1,out:0,pts:[]};$('mult').className='mult';$('cres').className='res';$('cres').textContent='Flying… cash out in time!';$('cbtn').textContent='CASH OUT';$('cbtn').className='btn';craf=requestAnimationFrame(crashLoop)}
+function crashLoop(t){const e=(t-cs.t0)/1000,c=$('cc'),x=c.getContext('2d');cs.m=Math.pow(Math.E,.12*e);if(cs.m>=cs.cp)cs.m=cs.cp;if(!cs.out)$('cbtn').textContent='CASH OUT RWF '+f(cs.s*cs.m);
+x.clearRect(0,0,600,300);x.strokeStyle='#ffffff14';for(let i=1;i<6;i++){x.beginPath();x.moveTo(0,i*50);x.lineTo(600,i*50);x.stroke()}
+const sx=Math.max(8,e+1),sy=Math.max(2,cs.m),P=k=>[20+k/sx*540,280-(Math.pow(Math.E,.12*k)-1)/(sy-1+.001)*240];x.beginPath();x.moveTo(20,280);for(let k=0;k<=e;k+=e/60||1){const[p,q]=P(k);x.lineTo(p,q)}const[px,py]=P(e);x.lineTo(px,py);
+x.strokeStyle='#f5c400';x.lineWidth=5;x.stroke();x.lineTo(px,280);x.lineTo(20,280);x.fillStyle='#f5c40022';x.fill();x.font='40px sans-serif';x.fillText(cs.m>=cs.cp?'💥':'✈️',px-20,py+12);
+$('mult').textContent=cs.m.toFixed(2)+'x';if(cs.m>=cs.cp){cs.st='idle';$('mult').className='mult boom';$('mult').textContent='CRASHED @ '+cs.cp.toFixed(2)+'x';if(!cs.out){$('cres').className='res';$('cres').textContent='💥 Crashed. Lost RWF '+f(cs.s)}
+$('chist').insertAdjacentHTML('afterbegin',`<span style="background:${cs.cp<2?'#c0392b':'#1e8449'};color:#fff">${cs.cp.toFixed(2)}x</span>`);$('cbtn').textContent='BET';$('cbtn').className='btn y';$('cbtn').disabled=0;return}craf=requestAnimationFrame(crashLoop)}
+initReels();drawWheel();
+tabs();draw();save();if(location.hash=="#casino")go("casino");
 </script></body></html>
